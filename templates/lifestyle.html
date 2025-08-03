@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Lifestyle Assessment</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #6c5ce7;
+      --secondary: #5649c0;
+      --accent: #a55eea;
+      --light: #f8f9fa;
+      --dark: #2d3436;
+      --gray: #7f8c8d;
+      --light-gray: #dfe6e9;
+    }
+
+    body {
+      background: linear-gradient(135deg, #fbfbfb 0%, #fdfdfd 100%);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 20px;
+      color: var(--dark);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .form-container {
+      background: rgb(244, 244, 244);
+      max-width: 500px;
+      margin: 40px auto;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .form-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+    
+    h2 {
+      color: var(--primary);
+      margin-bottom: 10px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 2rem;
+      letter-spacing: -0.5px;
+    }
+
+    .subtitle {
+      color: var(--gray);
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 1.05rem;
+      max-width: 80%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Card styling */
+    .lifestyle-card {
+      background: white;
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 25px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      border: 1px solid rgba(0,0,0,0.05);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .lifestyle-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: linear-gradient(to bottom, var(--primary), var(--accent));
+    }
+
+    .lifestyle-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+
+    .lifestyle-card h3 {
+      color: var(--primary);
+      margin-top: 0;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    .lifestyle-card h3 i {
+      margin-right: 12px;
+      font-size: 1.3rem;
+      color: var(--accent);
+    }
+
+    /* Slider styling */
+    .slider-container {
+      margin: 20px 0;
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 8px;
+      background: var(--light-gray);
+      border-radius: 10px;
+      outline: none;
+      margin: 20px 0;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 24px;
+      height: 24px;
+      background: white;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 4px solid var(--primary);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      transition: all 0.2s ease;
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.1);
+      border-color: var(--accent);
+    }
+
+    /* Value display */
+    .value-display {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-align: center;
+      margin: 20px 0;
+      position: relative;
+    }
+
+    .value-display::after {
+      content: '';
+      display: block;
+      width: 60px;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      margin: 12px auto;
+      border-radius: 4px;
+      opacity: 0.8;
+    }
+
+    /* Emoji feedback */
+    .emoji-feedback {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 15px;
+      padding: 0 10px;
+    }
+
+    .emoji {
+      font-size: 1.6rem;
+      opacity: 0.3;
+      transition: all 0.3s ease;
+      transform: scale(0.9);
+    }
+
+    .emoji.active {
+      opacity: 1;
+      color: var(--accent);
+      transform: scale(1.2);
+      text-shadow: 0 2px 5px rgba(165, 94, 234, 0.3);
+    }
+
+    /* Sleep inputs */
+    .sleep-inputs {
+      display: flex;
+      gap: 10 px;
+      margin-top: 20px;
+    }
+
+    .sleep-input-group {
+      flex: 1;
+      position: relative;
+    }
+
+    .sleep-input-group i {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--primary);
+      font-size: 1.1rem;
+    }
+
+    .sleep-input-group input {
+      width: 100%;
+      padding: 15px 15px 15px 40px;
+      border: 1px solid var(--light-gray);
+      border-radius: 1px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .sleep-input-group input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.2);
+      outline: none;
+    }
+
+    /* Submit button */
+    .submit-btn {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+      border: none;
+      padding: 16px;
+      border-radius: 10px;
+      width: 100%;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 30px;
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      box-shadow: 0 4px 15px rgba(108, 92, 231, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      letter-spacing: 0.5px;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(108, 92, 231, 0.5);
+    }
+
+    .submit-btn:active {
+      transform: translateY(0);
+    }
+
+    /* Navigation links */
+    .nav-links {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 30px;
+    }
+
+    .nav-links a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+      font-size: 0.95rem;
+    }
+
+    .nav-links a:hover {
+      color: var(--secondary);
+    }
+
+    .nav-links a i {
+      transition: transform 0.3s ease;
+    }
+
+    .nav-links a:first-child:hover i {
+      transform: translateX(-5px);
+    }
+
+    /* Step indicator */
+    .form-steps {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 30px;
+    }
+
+    .progress-container {
+      margin-top: 20px;
+      background: #e9ecef;
+      border-radius: 10px;
+      height: 10px;
+      overflow: hidden;
+    }
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #5f27cd, #a55eea);
+      width: 0%;
+      transition: width 1s ease;
+    }
+    .form-steps {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 25px;
+    }
+    .step {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: #e9ecef;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 10px;
+      font-weight: bold;
+      color: #6c757d;
+    }
+    .step.active {
+      background: #5f27cd;
+      color: white;
+    }
+    .step.completed {
+      background: #a55eea;
+      color: white;
+    }
+
+    /* Scale labels */
+    .scale-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 2px;
+      font-size: 0.85rem;
+      color: var(--gray);
+      padding: 0 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <div class="form-steps">
+      <div class="step completed">1</div>
+      <div class="step completed">2</div>
+      <div class="step completed">3</div>
+      <div class="step active">4</div>
+      <div class="step">5</div>
+    </div>
+
+    <h2>Your Lifestyle Assessment</h2>
+    <p class="subtitle">Help us understand your daily habits for better sleep analysis</p>
+
+    <form id="lifestyleForm">
+      <!-- Physical Activity Card -->
+      <div class="lifestyle-card">
+        <h3><i class="fas fa-running"></i> Physical Activity Level</h3>
+        <div class="slider-container">
+          <input type="range" id="activitySlider" min="1" max="100" value="50">
+          <div class="value-display" id="activityValue">50</div>
+          <div class="emoji-feedback">
+            <span class="emoji active" id="emoji1">🛌</span>
+            <span class="emoji" id="emoji2">🚶‍♂️</span>
+            <span class="emoji" id="emoji3">🏃‍♂️</span>
+            <span class="emoji" id="emoji4">🚴‍♀️</span>
+            <span class="emoji" id="emoji5">🏋️‍♂️</span>
+          </div>
+          <div class="scale-labels">
+            <span>Sedentary</span>
+            <span>Very Active</span>
+          </div>
+        </div>
+        <input type="hidden" id="activityInput" name="activity">
+      </div>
+
+      <!-- Stress Level Card -->
+      <div class="lifestyle-card">
+        <h3><i class="fas fa-brain"></i> Stress Level</h3>
+        <div class="slider-container">
+          <input type="range" id="stressSlider" min="1" max="10" value="5">
+          <div class="value-display" id="stressValue">5</div>
+          <div class="emoji-feedback">
+            <span class="emoji" id="stressEmoji1">😊</span>
+            <span class="emoji active" id="stressEmoji2">🙂</span>
+            <span class="emoji" id="stressEmoji3">😐</span>
+            <span class="emoji" id="stressEmoji4">😟</span>
+            <span class="emoji" id="stressEmoji5">😫</span>
+          </div>
+          <div class="scale-labels">
+            <span>Very Low</span>
+            <span>Very High</span>
+          </div>
+        </div>
+        <input type="hidden" id="stressInput" name="stress">
+      </div>
+
+      <!-- Sleep Duration Card -->
+      <div class="lifestyle-card">
+        <h3><i class="fas fa-bed"></i> Sleep Duration</h3>
+        <div class="sleep-inputs">
+          <div class="sleep-input-group">
+            <i class="far fa-clock"></i>
+            <input type="number" id="sleepHours" placeholder="Hours" min="0" max="24" required>
+          </div>
+          <div class="sleep-input-group">
+            <i class="fas fa-clock"></i>
+            <input type="number" id="sleepMinutes" placeholder="Minutes" min="0" max="59" required>
+          </div>
+        </div>
+      </div>
+
+      <button type="submit" class="submit-btn">
+        <i class="fas fa-moon"></i> Generate Sleep Prediction
+      </button>
+    </form>
+
+    <div class="nav-links">
+      <a href="vitals.html"><i class="fas fa-arrow-left"></i> Previous</a>
+    </div>
+  </div>
+
+  <script>
+    // Update slider values and emoji feedback
+    const activitySlider = document.getElementById('activitySlider');
+    const stressSlider = document.getElementById('stressSlider');
+    const emojis = ['emoji1', 'emoji2', 'emoji3', 'emoji4', 'emoji5'];
+    const stressEmojis = ['stressEmoji1', 'stressEmoji2', 'stressEmoji3', 'stressEmoji4', 'stressEmoji5'];
+
+    function updateActivityFeedback(value) {
+      document.getElementById('activityValue').textContent = value;
+      document.getElementById('activityInput').value = value;
+      
+      emojis.forEach(emoji => document.getElementById(emoji).classList.remove('active'));
+      if (value <= 20) document.getElementById('emoji1').classList.add('active');
+      else if (value <= 40) document.getElementById('emoji2').classList.add('active');
+      else if (value <= 60) document.getElementById('emoji3').classList.add('active');
+      else if (value <= 80) document.getElementById('emoji4').classList.add('active');
+      else document.getElementById('emoji5').classList.add('active');
+    }
+
+    function updateStressFeedback(value) {
+      document.getElementById('stressValue').textContent = value;
+      document.getElementById('stressInput').value = value;
+      
+      stressEmojis.forEach(emoji => document.getElementById(emoji).classList.remove('active'));
+      if (value <= 2) document.getElementById('stressEmoji1').classList.add('active');
+      else if (value <= 4) document.getElementById('stressEmoji2').classList.add('active');
+      else if (value <= 6) document.getElementById('stressEmoji3').classList.add('active');
+      else if (value <= 8) document.getElementById('stressEmoji4').classList.add('active');
+      else document.getElementById('stressEmoji5').classList.add('active');
+    }
+
+    activitySlider.addEventListener('input', () => updateActivityFeedback(activitySlider.value));
+    stressSlider.addEventListener('input', () => updateStressFeedback(stressSlider.value));
+
+    // Initialize values
+    updateActivityFeedback(activitySlider.value);
+    updateStressFeedback(stressSlider.value);
+
+    // Form validation
+    document.getElementById('lifestyleForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      if (!document.getElementById('sleepHours').value || !document.getElementById('sleepMinutes').value) {
+        alert('Please enter your sleep duration');
+        return;
+      }
+      
+      const minutes = parseInt(document.getElementById('sleepMinutes').value);
+      if (minutes < 0 || minutes > 59) {
+        alert('Please enter minutes between 0 and 59');
+        return;
+      }
+      
+      // Show loading state
+      const btn = document.querySelector('.submit-btn');
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyzing...';
+      btn.style.opacity = '0.9';
+      
+      setTimeout(() => {
+        window.location.href = 'predict.html';
+      }, 1500);
+    });
+  </script>
+</body>
+</html>

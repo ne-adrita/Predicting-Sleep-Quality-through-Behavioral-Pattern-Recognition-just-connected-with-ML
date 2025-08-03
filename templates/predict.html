@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Your Sleep Quality Results | DreamRest</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Results Page Styles */
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8eaf1 100%);
+            min-height: 100vh;
+            padding: 20px;
+            font-family: 'Poppins', sans-serif;
+            color: #2d3436;
+            margin: 0;
+        }
+        
+        .results-container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            font-family: 'Poppins', sans-serif;
+            color: #2d3436;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .results-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #6c5ce7, #a55eea);
+        }
+        
+        .results-header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+        
+        .results-header h1 {
+            font-size: 2.2rem;
+            color: #6c5ce7;
+            margin: 15px 0;
+            font-weight: 600;
+        }
+        
+        .moon-icon {
+            font-size: 2.5rem;
+            color: #fdcb6e;
+        }
+        
+        .stars {
+            margin-top: 10px;
+        }
+        
+        .stars i {
+            color: #fdcb6e;
+            margin: 0 5px;
+            font-size: 1.2rem;
+        }
+        
+        /* Score Display */
+        .score-display {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 40px 0;
+            flex-wrap: wrap;
+        }
+        
+        .score-gauge {
+            flex: 1;
+            min-width: 300px;
+            text-align: center;
+        }
+        
+        .gauge-circle {
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            position: relative;
+            margin: 0 auto;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .gauge-fill {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(
+                #00b894 0% calc(var(--score) * 10%),
+                #dfe6e9 calc(var(--score) * 10%) 100%
+            );
+            clip-path: circle(50% at 50% 50%);
+        }
+        
+        .gauge-cover {
+            position: absolute;
+            width: 160px;
+            height: 160px;
+            background: white;
+            border-radius: 50%;
+            top: 30px;
+            left: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .score-number {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: #2d3436;
+            line-height: 1;
+        }
+        
+        .score-max {
+            font-size: 1.5rem;
+            color: #7f8c8d;
+        }
+        
+        .gauge-labels {
+            display: flex;
+            justify-content: space-between;
+            width: 220px;
+            margin: 15px auto 0;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        .score-message {
+            flex: 1;
+            min-width: 300px;
+            padding: 0 20px;
+        }
+        
+        .message-box {
+            padding: 25px;
+            border-radius: 15px;
+            background: white;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            border-left: 5px solid;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .message-box i {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+        
+        .message-box h2 {
+            margin: 0 0 10px;
+            font-size: 1.5rem;
+        }
+        
+        .message-box p {
+            margin: 0;
+            color: #636e72;
+        }
+        
+        .message-box.success {
+            border-color: #00b894;
+            background: linear-gradient(to right, rgba(0, 184, 148, 0.05), white);
+        }
+        
+        .message-box.success i {
+            color: #00b894;
+        }
+        
+        .message-box.warning {
+            border-color: #fdcb6e;
+            background: linear-gradient(to right, rgba(253, 203, 110, 0.05), white);
+        }
+        
+        .message-box.warning i {
+            color: #fdcb6e;
+        }
+        
+        .message-box.alert {
+            border-color: #d63031;
+            background: linear-gradient(to right, rgba(214, 48, 49, 0.05), white);
+        }
+        
+        .message-box.alert i {
+            color: #d63031;
+        }
+        
+        /* Data Summary */
+        .data-summary {
+            margin: 50px 0;
+        }
+        
+        .data-summary h2 {
+            font-size: 1.5rem;
+            color: #6c5ce7;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .data-summary h2 i {
+            margin-right: 15px;
+            font-size: 1.8rem;
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+        
+        .summary-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .summary-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 1.5rem;
+            color: white;
+        }
+        
+        .card-icon.sleep {
+            background: linear-gradient(135deg, #6c5ce7, #a55eea);
+        }
+        
+        .card-icon.activity {
+            background: linear-gradient(135deg, #00b894, #55efc4);
+        }
+        
+        .card-icon.stress {
+            background: linear-gradient(135deg, #fd79a8, #e84393);
+        }
+        
+        .card-icon.health {
+            background: linear-gradient(135deg, #0984e3, #74b9ff);
+        }
+        
+        .summary-card h3 {
+            margin: 0 0 10px;
+            font-size: 1.1rem;
+            color: #2d3436;
+        }
+        
+        .card-value {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin: 5px 0;
+            color: #2d3436;
+        }
+        
+        .card-comment {
+            font-size: 0.9rem;
+            color: #636e72;
+            margin: 10px 0 0;
+        }
+        
+        .stress-meter {
+            display: flex;
+            justify-content: center;
+            gap: 3px;
+            margin: 15px 0;
+        }
+        
+        .stress-block {
+            width: 8px;
+            height: 20px;
+            background: #dfe6e9;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+        
+        .stress-block.active {
+            background: #e84393;
+        }
+        
+        /* Recommendations */
+        .recommendations-section {
+            margin: 50px 0;
+        }
+        
+        .section-header {
+            margin-bottom: 25px;
+        }
+        
+        .section-header h2 {
+            font-size: 1.5rem;
+            color: #6c5ce7;
+            margin: 0 0 5px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-header h2 i {
+            margin-right: 15px;
+            font-size: 1.8rem;
+        }
+        
+        .section-header p {
+            color: #636e72;
+            margin: 0;
+        }
+        
+        .recommendations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+        }
+        
+        .recommendation-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            align-items: flex-start;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .recommendation-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .rec-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            flex-shrink: 0;
+            color: #6c5ce7;
+            font-size: 0.9rem;
+        }
+        
+        .recommendation-card p {
+            margin: 0;
+            color: #2d3436;
+        }
+        
+        /* Buttons */
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 50px 0 30px;
+            flex-wrap: wrap;
+        }
+        
+        .btn-primary, .btn-secondary {
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #6c5ce7, #a55eea);
+            color: white;
+            border: none;
+            box-shadow: 0 5px 15px rgba(108, 92, 231, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(108, 92, 231, 0.4);
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #6c5ce7;
+            border: 1px solid #dfe6e9;
+        }
+        
+        .btn-secondary:hover {
+            background: #f8f9fa;
+            transform: translateY(-3px);
+        }
+        
+        .btn-primary i, .btn-secondary i {
+            margin-right: 8px;
+        }
+        
+        /* Sleep facts */
+        .sleep-facts {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 40px;
+            text-align: center;
+            color: #636e72;
+        }
+        
+        .sleep-facts i {
+            color: #6c5ce7;
+            margin-right: 8px;
+        }
+        
+        /* Enhanced Number Display Styles */
+        .value-display {
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            gap: 8px;
+            margin: 15px 0;
+        }
+        
+        .number-bubble {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #6c5ce7;
+            background: rgba(108, 92, 231, 0.1);
+            padding: 5px 15px;
+            border-radius: 50px;
+        }
+        
+        .unit {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+        
+        .range-indicator {
+            margin: 15px 0;
+        }
+        
+        .range-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: #7f8c8d;
+            margin-bottom: 5px;
+        }
+        
+        .range-bar {
+            height: 6px;
+            background: #dfe6e9;
+            border-radius: 3px;
+            position: relative;
+        }
+        
+        .range-fill {
+            height: 100%;
+            background: #6c5ce7;
+            border-radius: 3px;
+            width: 0;
+            transition: width 0.5s ease;
+        }
+        
+        .range-marker {
+            position: absolute;
+            top: -4px;
+            width: 14px;
+            height: 14px;
+            background: white;
+            border: 3px solid #6c5ce7;
+            border-radius: 50%;
+            transform: translateX(-50%);
+            transition: left 0.5s ease;
+        }
+        
+        .card-comment i {
+            margin-right: 5px;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .score-display {
+                flex-direction: column;
+            }
+            
+            .score-message {
+                margin-top: 30px;
+            }
+            
+            .summary-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .recommendations-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn-primary, .btn-secondary {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="results-container">
+        <!-- Header with decorative elements -->
+        <div class="results-header">
+            <div class="moon-icon"><i class="fas fa-moon"></i></div>
+            <h1>Your Sleep Quality Report</h1>
+            <div class="stars">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+            </div>
+        </div>
+
+        <!-- Main score display -->
+        <div class="score-display">
+            <div class="score-gauge">
+                <div class="gauge-circle" style="--score: 7.5;">
+                    <div class="gauge-fill"></div>
+                    <div class="gauge-cover">
+                        <span class="score-number">7.5</span>
+                        <span class="score-max">/10</span>
+                    </div>
+                </div>
+                <div class="gauge-labels">
+                    <span>Poor</span>
+                    <span>Excellent</span>
+                </div>
+            </div>
+            
+            <div class="score-message">
+                <div class="message-box warning">
+                    <i class="fas fa-info-circle"></i>
+                    <h2>Good Sleep Quality</h2>
+                    <p>Your sleep is decent but could benefit from some improvements.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fixed Data Summary Section -->
+        <div class="data-summary">
+            <h2><i class="fas fa-clipboard-list"></i> Your Input Details</h2>
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <div class="card-icon sleep"><i class="fas fa-bed"></i></div>
+                    <h3>Sleep Duration</h3>
+                    <div class="value-display">
+                        <span class="number-bubble">6.5</span>
+                        <span class="unit">hours/night</span>
+                    </div>
+                    <div class="range-indicator">
+                        <div class="range-labels">
+                            <span>3h</span>
+                            <span>9h</span>
+                        </div>
+                        <div class="range-bar">
+                            <div class="range-fill" style="width: 58.3%"></div>
+                            <div class="range-marker" style="left: 58.3%"></div>
+                        </div>
+                    </div>
+                    <p class="card-comment">
+                        <i class="fas fa-exclamation-triangle"></i> Below recommended (7-9 hours)
+                    </p>
+                </div>
+                
+                <div class="summary-card">
+                    <div class="card-icon activity"><i class="fas fa-running"></i></div>
+                    <h3>Physical Activity</h3>
+                    <div class="value-display">
+                        <span class="number-bubble">45</span>
+                        <span class="unit">minutes/day</span>
+                    </div>
+                    <div class="range-indicator">
+                        <div class="range-labels">
+                            <span>0</span>
+                            <span>120+</span>
+                        </div>
+                        <div class="range-bar">
+                            <div class="range-fill" style="width: 37.5%"></div>
+                            <div class="range-marker" style="left: 37.5%"></div>
+                        </div>
+                    </div>
+                    <p class="card-comment">
+                        <i class="fas fa-check-circle"></i> Moderate
+                    </p>
+                </div>
+                
+                <div class="summary-card">
+                    <div class="card-icon stress"><i class="fas fa-brain"></i></div>
+                    <h3>Stress Level</h3>
+                    <div class="value-display">
+                        <span class="number-bubble">4</span>
+                        <span class="unit">/10 scale</span>
+                    </div>
+                    <div class="stress-meter">
+                        <div class="stress-block active"></div>
+                        <div class="stress-block active"></div>
+                        <div class="stress-block active"></div>
+                        <div class="stress-block active"></div>
+                        <div class="stress-block"></div>
+                        <div class="stress-block"></div>
+                        <div class="stress-block"></div>
+                        <div class="stress-block"></div>
+                        <div class="stress-block"></div>
+                        <div class="stress-block"></div>
+                    </div>
+                    <p class="card-comment">
+                        <i class="fas fa-info-circle"></i> Moderate
+                    </p>
+                </div>
+                
+                <div class="summary-card">
+                    <div class="card-icon health"><i class="fas fa-heartbeat"></i></div>
+                    <h3>Health Metrics</h3>
+                    <div class="value-display">
+                        <span class="number-bubble">72</span>
+                        <span class="unit">bpm</span>
+                    </div>
+                    <div class="range-indicator">
+                        <div class="range-labels">
+                            <span>40</span>
+                            <span>120</span>
+                        </div>
+                        <div class="range-bar">
+                            <div class="range-fill" style="width: 40%"></div>
+                            <div class="range-marker" style="left: 40%"></div>
+                        </div>
+                    </div>
+                    <p class="card-comment">
+                        BMI: Normal
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recommendations section -->
+        <div class="recommendations-section">
+            <div class="section-header">
+                <h2><i class="fas fa-lightbulb"></i> Personalized Recommendations</h2>
+                <p>Actionable tips to improve your sleep quality</p>
+            </div>
+            
+            <div class="recommendations-grid">
+                <div class="recommendation-card">
+                    <div class="rec-icon">
+                        <i class="fas fa-arrow-up"></i>
+                    </div>
+                    <p>Increase your sleep duration by 30-60 minutes each night</p>
+                </div>
+                <div class="recommendation-card">
+                    <div class="rec-icon">
+                        <i class="fas fa-arrow-down"></i>
+                    </div>
+                    <p>Reduce caffeine intake after 2 PM</p>
+                </div>
+                <div class="recommendation-card">
+                    <div class="rec-icon">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <p>Maintain your current exercise routine</p>
+                </div>
+                <div class="recommendation-card">
+                    <div class="rec-icon">
+                        <i class="fas fa-moon"></i>
+                    </div>
+                    <p>Try meditation for 10 minutes before bed to reduce stress</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action buttons -->
+        <div class="action-buttons">
+            <a href="/" class="btn-primary">
+                <i class="fas fa-redo"></i> Start Over
+            </a>
+            <button class="btn-secondary" onclick="window.print()">
+                <i class="fas fa-download"></i> Print Report
+            </button>
+        </div>
+
+        <!-- Sleep facts footer -->
+        <div class="sleep-facts">
+            <p><i class="fas fa-info-circle"></i> <strong>Did you know?</strong> Consistent sleep schedule improves quality more than extra hours on weekends.</p>
+        </div>
+    </div>
+
+    <script>
+        // Enhanced animation for score display
+        document.addEventListener('DOMContentLoaded', function() {
+            const scoreElement = document.querySelector('.score-number');
+            const finalScore = 7.5;
+            let currentScore = 0;
+            const duration = 1000; // Animation duration in ms
+            const increment = finalScore / (duration / 16); // 60fps
+            
+            const animateScore = () => {
+                currentScore = Math.min(finalScore, currentScore + increment);
+                scoreElement.textContent = currentScore.toFixed(1);
+                
+                if (currentScore < finalScore) {
+                    requestAnimationFrame(animateScore);
+                }
+            };
+            
+            // Start animation after short delay
+            setTimeout(() => {
+                requestAnimationFrame(animateScore);
+            }, 300);
+            
+            // Add pulse animation when score completes
+            setTimeout(() => {
+                scoreElement.classList.add('pulse');
+            }, duration + 300);
+        });
+    </script>
+</body>
+</html>

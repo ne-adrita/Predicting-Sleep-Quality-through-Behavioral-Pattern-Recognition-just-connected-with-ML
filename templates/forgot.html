@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forgot Password - Sleep Tracker</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #6c5ce7;
+      --primary-light: #a55eea;
+      --accent: #00b894;
+      --light: #f8f9fa;
+      --dark: #2d3436;
+      --gray: #7f8c8d;
+      --light-gray: #dfe6e9;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #e8eaf1 100%);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--dark);
+      line-height: 1.6;
+    }
+
+    .form-container {
+      background: white;
+      width: 100%;
+      max-width: 420px;
+      padding: 2.5rem;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      animation: fadeIn 0.6s ease-out;
+      position: relative;
+      overflow: hidden;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .form-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(90deg, var(--primary), var(--primary-light));
+    }
+
+    h2 {
+      color: var(--primary);
+      margin-bottom: 1rem;
+      font-size: 1.8rem;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .subtitle {
+      color: var(--gray);
+      margin-bottom: 1.5rem;
+      text-align: center;
+      font-size: 0.95rem;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .form-step {
+      display: none;
+      animation: fadeIn 0.4s ease-out;
+    }
+
+    .form-step.active {
+      display: block;
+    }
+
+    .input-group {
+      position: relative;
+    }
+
+    .input-group i {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gray);
+      transition: all 0.3s ease;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px 14px 14px 42px;
+      border: 1px solid var(--light-gray);
+      border-radius: 10px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.2);
+      outline: none;
+    }
+
+    input:focus + i {
+      color: var(--primary);
+    }
+
+    input::placeholder {
+      color: var(--gray);
+      opacity: 0.7;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gray);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: none;
+      border: none;
+      padding: 0;
+    }
+
+    .password-toggle:hover {
+      color: var(--primary);
+    }
+
+    button {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 0.5rem;
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(108, 92, 231, 0.4);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    .links {
+      margin-top: 1.5rem;
+      text-align: center;
+    }
+
+    .links a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.3s ease;
+    }
+
+    .links a:hover {
+      color: var(--primary-light);
+    }
+
+    .links a i {
+      transition: transform 0.3s ease;
+    }
+
+    .links a:hover i {
+      transform: translateX(-4px);
+    }
+
+    .code-inputs {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+
+    .code-inputs input {
+      width: 40px;
+      height: 50px;
+      text-align: center;
+      font-size: 1.2rem;
+      padding: 0;
+    }
+
+    .resend-link {
+      text-align: center;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+    }
+
+    .resend-link a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .resend-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <!-- Step 1: Email Input -->
+    <div class="form-step active" id="step1">
+      <h2>Reset Your Password</h2>
+      <p class="subtitle">Enter your email to receive a verification code</p>
+      
+      <form id="emailForm">
+        <div class="input-group">
+          <i class="fas fa-envelope"></i>
+          <input type="email" id="emailInput" placeholder="Enter your email" required>
+        </div>
+        
+        <button type="submit" id="sendCodeBtn">
+          <i class="fas fa-paper-plane"></i> Send Verification Code
+        </button>
+      </form>
+    </div>
+
+    <!-- Step 2: Code and New Password -->
+    <div class="form-step" id="step2">
+      <h2>Create New Password</h2>
+      <p class="subtitle">Enter the verification code sent to your email</p>
+      
+      <form id="resetForm">
+        <div class="code-inputs">
+          <input type="text" maxlength="1" pattern="[0-9]" required>
+          <input type="text" maxlength="1" pattern="[0-9]" required>
+          <input type="text" maxlength="1" pattern="[0-9]" required>
+          <input type="text" maxlength="1" pattern="[0-9]" required>
+          <input type="text" maxlength="1" pattern="[0-9]" required>
+          <input type="text" maxlength="1" pattern="[0-9]" required>
+        </div>
+        
+        <div class="input-group">
+          <i class="fas fa-lock"></i>
+          <input type="password" id="newPassword" placeholder="New Password" required>
+          <button type="button" class="password-toggle" id="toggleNewPassword">
+            <i class="fas fa-eye"></i>
+          </button>
+        </div>
+        
+        <div class="input-group">
+          <i class="fas fa-lock"></i>
+          <input type="password" id="confirmPassword" placeholder="Confirm New Password" required>
+          <button type="button" class="password-toggle" id="toggleConfirmPassword">
+            <i class="fas fa-eye"></i>
+          </button>
+        </div>
+        
+        <button type="submit" id="resetPasswordBtn">
+          <i class="fas fa-sync-alt"></i> Reset Password
+        </button>
+      </form>
+      
+      <div class="resend-link">
+        Didn't receive code? <a href="#" id="resendLink">Resend Code</a>
+      </div>
+    </div>
+
+    <div class="links">
+      <a href="login.html">
+        <i class="fas fa-arrow-left"></i> Back to Login
+      </a>
+    </div>
+  </div>
+
+  <script>
+    // DOM Elements
+    const step1 = document.getElementById('step1');
+    const step2 = document.getElementById('step2');
+    const emailForm = document.getElementById('emailForm');
+    const sendCodeBtn = document.getElementById('sendCodeBtn');
+    const resendLink = document.getElementById('resendLink');
+    const codeInputs = document.querySelectorAll('.code-inputs input');
+    const toggleNewPassword = document.getElementById('toggleNewPassword');
+    const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
+    const newPassword = document.getElementById('newPassword');
+    const confirmPassword = document.getElementById('confirmPassword');
+
+    // Toggle password visibility
+    toggleNewPassword.addEventListener('click', function() {
+      const type = newPassword.getAttribute('type') === 'password' ? 'text' : 'password';
+      newPassword.setAttribute('type', type);
+      this.querySelector('i').classList.toggle('fa-eye-slash');
+    });
+
+    toggleConfirmPassword.addEventListener('click', function() {
+      const type = confirmPassword.getAttribute('type') === 'password' ? 'text' : 'password';
+      confirmPassword.setAttribute('type', type);
+      this.querySelector('i').classList.toggle('fa-eye-slash');
+    });
+
+    // Auto-focus next code input
+    codeInputs.forEach((input, index) => {
+      input.addEventListener('input', () => {
+        if (input.value && index < codeInputs.length - 1) {
+          codeInputs[index + 1].focus();
+        }
+      });
+      
+      // Allow backspace to move to previous input
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && !input.value && index > 0) {
+          codeInputs[index - 1].focus();
+        }
+      });
+    });
+
+    // Email form submission
+    emailForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      // Show loading state
+      sendCodeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+      sendCodeBtn.disabled = true;
+      
+      // Simulate sending code (replace with actual API call)
+      setTimeout(() => {
+        // Switch to step 2
+        step1.classList.remove('active');
+        step2.classList.add('active');
+        
+        // Reset button (for resend functionality)
+        sendCodeBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Verification Code';
+        sendCodeBtn.disabled = false;
+      }, 1500);
+    });
+
+    // Resend code link
+    resendLink.addEventListener('click', function(e) {
+      e.preventDefault();
+      
+      // Show loading state
+      const originalText = resendLink.textContent;
+      resendLink.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+      
+      // Simulate resending code
+      setTimeout(() => {
+        resendLink.textContent = originalText;
+        alert('New verification code sent!');
+      }, 1000);
+    });
+
+    // Password reset form submission
+    document.getElementById('resetForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const resetBtn = document.getElementById('resetPasswordBtn');
+      
+      // Validate passwords match
+      if (newPassword.value !== confirmPassword.value) {
+        alert('Passwords do not match!');
+        return;
+      }
+      
+      // Validate code (simplified - in real app, verify with server)
+      let code = '';
+      codeInputs.forEach(input => code += input.value);
+      if (code.length !== 6) {
+        alert('Please enter the full 6-digit code');
+        return;
+      }
+      
+      // Show loading state
+      resetBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Resetting...';
+      resetBtn.disabled = true;
+      
+      // Simulate password reset (replace with actual API call)
+      setTimeout(() => {
+        alert('Password reset successfully! Redirecting to login...');
+        window.location.href = 'login.html';
+      }, 1500);
+    });
+  </script>
+</body>
+</html>
