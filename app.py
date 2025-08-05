@@ -35,7 +35,7 @@ def predict():
         input_data = {col: form_data.get(col, 0) for col in REQUIRED_COLUMNS}
         input_df = pd.DataFrame([input_data])
         
-        # Convert numerical fields
+        # Convert numerical
         numerical_cols = ['Person ID', 'Age', 'Sleep Duration', 
                          'Physical Activity Level', 'Stress Level',
                          'Heart Rate', 'Daily Steps']
