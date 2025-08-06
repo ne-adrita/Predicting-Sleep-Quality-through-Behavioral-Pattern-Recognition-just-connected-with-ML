@@ -11,6 +11,7 @@
         .result { margin-top: 20px; padding: 15px; background: #f8f8f8; border-radius: 5px; }
         .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
     </style>
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
     <h1>Sleep Quality Prediction</h1>
@@ -87,7 +88,7 @@
                     <label for="BMI Category">BMI Category:</label>
                     <select id="BMI Category" name="BMI Category" required>
                         <option value="Normal" {% if input_data['BMI Category'] == 'Normal' %}selected{% endif %}>Normal</option>
-                        <option value="Overweight" {% if input_data['BMI Category'] == 'Normalweight' %}selected{% endif %}>Normal weight</option>
+                        <option value="Normalweight" {% if input_data['BMI Category'] == 'Normalweight' %}selected{% endif %}>Normal weight</option>
                         <option value="Overweight" {% if input_data['BMI Category'] == 'Overweight' %}selected{% endif %}>Overweight</option>
                         <option value="Obese" {% if input_data['BMI Category'] == 'Obese' %}selected{% endif %}>Obese</option>
                     </select>
