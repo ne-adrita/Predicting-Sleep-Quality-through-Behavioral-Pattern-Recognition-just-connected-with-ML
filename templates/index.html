@@ -1,97 +1,127 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sleep Health Analytics</title>
-    <link rel="stylesheet" href="/static/styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Sleep Quality Predictor</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, select { width: 100%; padding: 8px; box-sizing: border-box; margin-bottom: 5px; }
+        button { background: #4CAF50; color: white; padding: 10px 15px; border: none; cursor: pointer; }
+        .result { margin-top: 20px; padding: 15px; background: #f8f8f8; border-radius: 5px; }
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+    </style>
 </head>
 <body>
-    <header class="hero">
-        <div class="hero-content">
-            <h1>Sleep Health Analytics</h1>
-            <p>Understand and improve your sleep quality with data-driven insights</p>
-            <a href="#predictor" class="cta-button">Try Our Predictor</a>
+    <h1>Sleep Quality Prediction</h1>
+    <form action="/predict" method="post">
+        <div class="two-col">
+            <!-- Column 1 -->
+            <div>
+                <div class="form-group">
+                    <label for="Person ID">Person ID:</label>
+                    <input type="number" id="Person ID" name="Person ID" 
+                           value="{{ input_data['Person ID'] }}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="Age">Age:</label>
+                    <input type="number" id="Age" name="Age" 
+                           value="{{ input_data['Age'] }}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="Gender">Gender:</label>
+                    <select id="Gender" name="Gender" required>
+                        <option value="Male" {% if input_data['Gender'] == 'Male' %}selected{% endif %}>Male</option>
+                        <option value="Female" {% if input_data['Gender'] == 'Female' %}selected{% endif %}>Female</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="Occupation">Occupation:</label>
+                    <input type="text" id="Occupation" name="Occupation" 
+                           value="{{ input_data['Occupation'] }}" required>
+                </div>
+            </div>
+            
+            <!-- Column 2 -->
+            <div>
+                <div class="form-group">
+                    <label for="Sleep Duration">Sleep Duration (hours):</label>
+                    <input type="number" step="0.1" id="Sleep Duration" name="Sleep Duration" 
+                           value="{{ input_data['Sleep Duration'] }}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="Physical Activity Level">Physical Activity Level (1-10):</label>
+                    <input type="number" min="1" max="10" id="Physical Activity Level" 
+                           name="Physical Activity Level" 
+                           value="{{ input_data['Physical Activity Level'] }}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="Stress Level">Stress Level (1-10):</label>
+                    <input type="number" min="1" max="10" id="Stress Level" name="Stress Level" 
+                           value="{{ input_data['Stress Level'] }}" required>
+                </div>
+            </div>
         </div>
-    </header>
+        
+        <!-- Additional Fields -->
+        <div class="two-col">
+            <div>
+                <div class="form-group">
+                    <label for="BMI Category">BMI Category:</label>
+                    <select id="BMI Category" name="BMI Category" required>
+                        <option value="Normal" {% if input_data['BMI Category'] == 'Normal' %}selected{% endif %}>Normal</option>
+                        <option value="Overweight" {% if input_data['BMI Category'] == 'Normalweight' %}selected{% endif %}>Normal weight</option>
+                        <option value="Overweight" {% if input_data['BMI Category'] == 'Overweight' %}selected{% endif %}>Overweight</option>
+                        <option value="Obese" {% if input_data['BMI Category'] == 'Obese' %}selected{% endif %}>Obese</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <div class="form-group">
+                    <label for="Blood Pressure">Blood Pressure (e.g., 120/80):</label>
+                    <input type="text" id="Blood Pressure" name="Blood Pressure" 
+                           value="{{ input_data['Blood Pressure'] }}" required>
+                </div>
+            </div>
+        </div>
+        
+        <div class="two-col">
+            <div>
+                <div class="form-group">
+                    <label for="Heart Rate">Heart Rate (bpm):</label>
+                    <input type="number" id="Heart Rate" name="Heart Rate" 
+                           value="{{ input_data['Heart Rate'] }}" required>
+                </div>
+            </div>
+            <div>
+                <div class="form-group">
+                    <label for="Daily Steps">Daily Steps:</label>
+                    <input type="number" id="Daily Steps" name="Daily Steps" 
+                           value="{{ input_data['Daily Steps'] }}" required>
+                </div>
+            </div>
+        </div>
+        
+        <button type="submit">Predict Sleep Quality</button>
+    </form>
 
-    <nav class="main-nav">
+    {% if prediction_text %}
+    <div class="result">
+        <h3>{{ prediction_text }}</h3>
+        {% if input_data %}
+        <h4>Your Input:</h4>
         <ul>
-            <li><a href="index.html" class="active"><i class="fas fa-home"></i> Home</a></li>
-            <li><a href="predictor.html"><i class="fas fa-chart-line"></i> Quality Predictor</a></li>
-            <!-- <li><a href="analysis.html"><i class="fas fa-search"></i> Data Analysis</a></li>
-            <li><a href="trends.html"><i class="fas fa-chart-bar"></i> Sleep Trends</a></li>
-            <li><a href="about.html"><i class="fas fa-info-circle"></i> About</a></li> -->
+            {% for key, value in input_data.items() %}
+            <li><strong>{{ key }}:</strong> {{ value }}</li>
+            {% endfor %}
         </ul>
-    </nav>
-
-    <main>
-        <section id="features" class="features-section">
-            <h2>Key Features</h2>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <i class="fas fa-moon"></i>
-                    <h3>Sleep Quality Prediction</h3>
-                    <p>Get personalized sleep quality predictions based on your lifestyle factors.</p>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-heartbeat"></i>
-                    <h3>Health Correlation</h3>
-                    <p>See how BMI, blood pressure, and activity levels affect sleep quality.</p>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-briefcase"></i>
-                    <h3>Occupation Insights</h3>
-                    <p>Compare sleep patterns across different professions.</p>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-chart-pie"></i>
-                    <h3>Trend Analysis</h3>
-                    <p>Visualize sleep duration and quality trends by age and gender.</p>
-                </div>
-            </div>
-        </section>
-
-        <section id="predictor" class="predictor-preview">
-            <div class="preview-content">
-                <h2>Sleep Quality Predictor</h2>
-                <p>Our advanced algorithm analyzes your sleep patterns and health metrics to predict your sleep quality score.</p>
-                <a href="predictor.html" class="cta-button">Try Predictor Now</a>
-            </div>
-            <div class="preview-image">
-                <img src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Sleep tracking illustration">
-            </div>
-        </section>
-    </main>
-
-    <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>Sleep Health Analytics</h3>
-                <p>Data-driven insights for better sleep health and wellness.</p>
-            </div>
-            <div class="footer-section">
-                <h3>Quick Links</h3>
-                <ul>
-                    <li><a href="predictor.html">Quality Predictor</a></li>
-                    <!-- <li><a href="analysis.html">Data Analysis</a></li>
-                    <li><a href="trends.html">Sleep Trends</a></li> -->
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h3>Contact</h3>
-                <p>noshin.adrita@north-south.edu</p>
-                <div class="social-icons">
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fab fa-facebook"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                </div>
-            </div>
-        </div>
-        <div class="copyright">
-            <p>&copy; 2025 Sleep Health Analytics. All rights reserved by Noshin Ebnat Adrita.</p>
-        </div>
-    </footer>
+        {% endif %}
+    </div>
+    {% endif %}
 </body>
-</html>
+</html>                  
