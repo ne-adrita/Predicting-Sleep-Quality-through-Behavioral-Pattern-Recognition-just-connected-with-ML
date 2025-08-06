@@ -35,13 +35,25 @@
                     <select id="Gender" name="Gender" required>
                         <option value="Male" {% if input_data['Gender'] == 'Male' %}selected{% endif %}>Male</option>
                         <option value="Female" {% if input_data['Gender'] == 'Female' %}selected{% endif %}>Female</option>
+                        <option value="Male" {% if input_data['Gender'] == 'Others' %}selected{% endif %}>Others</option>
                     </select>
                 </div>
                 
                 <div class="form-group">
                     <label for="Occupation">Occupation:</label>
-                    <input type="text" id="Occupation" name="Occupation" 
-                           value="{{ input_data['Occupation'] }}" required>
+                    <select id="Occupation" name="Occupation" required>
+                        <option value="">Select Occupation</option>
+                        <option value="Doctor" {% if input_data['Occupation'] == 'Doctor' %}selected{% endif %}>Doctor</option>
+                        <option value="Engineer" {% if input_data['Occupation'] == 'Engineer' %}selected{% endif %}>Engineer</option>
+                        <option value="Lawyer" {% if input_data['Occupation'] == 'Lawyer' %}selected{% endif %}>Lawyer</option>
+                        <option value="Teacher" {% if input_data['Occupation'] == 'Teacher' %}selected{% endif %}>Teacher</option>
+                        <option value="Accountant" {% if input_data['Occupation'] == 'Accountant' %}selected{% endif %}>Accountant</option>
+                        <option value="Nurse" {% if input_data['Occupation'] == 'Nurse' %}selected{% endif %}>Nurse</option>
+                        <option value="Software Engineer" {% if input_data['Occupation'] == 'Software Engineer' %}selected{% endif %}>Software Engineer</option>
+                        <option value="Scientist" {% if input_data['Occupation'] == 'Scientist' %}selected{% endif %}>Scientist</option>
+                        <option value="Manager" {% if input_data['Occupation'] == 'Manager' %}selected{% endif %}>Manager</option>
+                        <option value="Salesperson" {% if input_data['Occupation'] == 'Salesperson' %}selected{% endif %}>Salesperson</option>
+                    </select>
                 </div>
             </div>
             
@@ -54,8 +66,8 @@
                 </div>
                 
                 <div class="form-group">
-                    <label for="Physical Activity Level">Physical Activity Level (1-10):</label>
-                    <input type="number" min="1" max="10" id="Physical Activity Level" 
+                    <label for="Physical Activity Level">Physical Activity Level (1-100):</label>
+                    <input type="number" min="1" max="100" id="Physical Activity Level" 
                            name="Physical Activity Level" 
                            value="{{ input_data['Physical Activity Level'] }}" required>
                 </div>
